@@ -1,11 +1,12 @@
 import "./index.css";
 import "./background.css";
-
+import Card from "./components/Card";
 import { useState, useEffect } from "react";
 
 function App() {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState(null);
+  // const [data, setData] = useState(null);
+  const [data, setData] = useState([]); // Since you know the type of data you are expecting, this being an array
   const [error, setError] = useState(null);
   useEffect(() => {
     fetch("https://swapi.dev/api/films")
@@ -18,50 +19,43 @@ function App() {
         return response.json();
       })
       .then((actualData) => {
-        console.log(actualData)
+        console.log(actualData);
         setData(actualData.results);
-        setError(null)
+        setError(null);
       })
       .catch((error) => {
-        console.log(error)
+        console.log(error);
         setError(error);
-      }).finally(()=>{
-        setLoading(false)
       })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   return (
     <>
       <div className="bg-black min-h-screen ">
-        
-        
-        
         <div className="p-7">
-        <h1 className="m-4 text-white font-extrabold text-5xl text-center"> Star Wars </h1>
-        {loading && <div className="text-white text-center">Data is loading. Please wait</div>}
-        {error && <div className="text-white text-center"> There is a problem</div> }
-        <div className="grid grid-cols-3 grid-rows-2 gap-6  ">
-          {data && data.map((item)=>{
-            return(
-              
-              <div key= {item.episode_id} className='p-6 bg-slate-800 rounded-lg'>
-               <h2 className="text-white text-xl font-semibold">{item.title}
-</h2>
-<p className="text-white mb-4 ">{item.release_date}</p>
-<p className="text-white mb-6">{item.opening_crawl}</p>
-<div className="border-[4px] border-red-500" ></div>
-<a href='/' className='text-yellow-300'>
-  More info
-</a>
-
-              </div>
-              
-            )
-          })}</div>
-
-
-
-
+          <h1 className="m-4 text-white font-extrabold text-5xl text-center">
+            {" "}
+            Star Wars{" "}
+          </h1>
+          {loading && (
+            <div className="text-white text-center">
+              Data is loading. Please wait
+            </div>
+          )}
+          {error && (
+            <div className="text-white text-center"> There is a problem</div>
+          )}
+          <div className="grid grid-cols-3 grid-rows-2 gap-6  ">
+            {data &&
+              data.map((item) => {
+                return (
+                <Card key={item.episode_id} item={item}/> // it's better to break into smaller components
+                );
+              })}
+          </div>
         </div>
       </div>
     </>
